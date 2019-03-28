@@ -1,4 +1,4 @@
-package com.frank.netty.domain;
+package com.frank.netty.mqtt.domain;
 
 import lombok.Data;
 

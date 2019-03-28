@@ -1,6 +1,6 @@
-package com.frank.netty.client;
+package com.frank.netty.mqtt.client;
 
-import com.frank.netty.client.handler.NettyMqttClientHandler;
+import com.frank.netty.mqtt.client.handler.NettyMqttClientHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;

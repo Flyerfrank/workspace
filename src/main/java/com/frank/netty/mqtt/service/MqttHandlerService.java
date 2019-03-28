@@ -1,4 +1,4 @@
-package com.frank.netty.service;
+package com.frank.netty.mqtt.service;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.mqtt.MqttConnectMessage;
