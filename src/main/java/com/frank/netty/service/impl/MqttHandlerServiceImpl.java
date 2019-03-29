@@ -12,7 +12,10 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.mqtt.*;
 import io.netty.util.AttributeKey;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
@@ -20,6 +23,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Slf4j
+@Service
 public class MqttHandlerServiceImpl implements MqttHandlerService {
 
     @Autowired
@@ -227,6 +232,9 @@ public class MqttHandlerServiceImpl implements MqttHandlerService {
     private void sendPublishMessage(String topic, MqttQoS mqttQoS, byte[] messageBytes, boolean retain, boolean dup) {
         List<SubscribeStore> subscribeStores = subscribeStoreService.search(topic);
 
+        if (CollectionUtils.isEmpty(subscribeStores)){
+            return;
+        }
         subscribeStores.forEach(subscribeStore -> {
 
             if (sessionStoreService.containsKey(subscribeStore.getClientId())) {
@@ -282,10 +290,12 @@ public class MqttHandlerServiceImpl implements MqttHandlerService {
 
     @Override
     public void doPingreoMessage(ChannelHandlerContext ctx, MqttMessage msg) {
+
         MqttMessage pingRespMessage = MqttMessageFactory.newMessage(
                 new MqttFixedHeader(MqttMessageType.PINGRESP, false, MqttQoS.AT_MOST_ONCE, false, 0),
                 null,
                 null);
+        System.out.println("clientId = " + ctx.channel().attr(AttributeKey.valueOf("clientId")).get());
 //        log.info("PINGREQ - clientId: {}", (String) ctx.channel().attr(AttributeKey.valueOf("clientId")).get());
         ctx.channel().writeAndFlush(pingRespMessage);
     }
@@ -293,6 +303,26 @@ public class MqttHandlerServiceImpl implements MqttHandlerService {
     @Override
     public void doPingrespMessage(ChannelHandlerContext ctx, MqttMessage msg) {
 
+    }
+
+    /**
+     * 取消订阅
+     * @param ctx
+     * @param msg
+     */
+    @Override
+    public void doUnSubscribe(ChannelHandlerContext ctx, MqttUnsubscribeMessage msg) {
+        List<String> topicFilters = msg.payload().topics();
+        String clinetId = (String) ctx.channel().attr(AttributeKey.valueOf("clientId")).get();
+        topicFilters.forEach(topicFilter -> {
+            subscribeStoreService.remove(topicFilter, clinetId);
+            log.info("UNSUBSCRIBE - clientId: {}, topicFilter: {}", clinetId, topicFilter);
+        });
+        MqttUnsubAckMessage unsubAckMessage = (MqttUnsubAckMessage) MqttMessageFactory.newMessage(
+                new MqttFixedHeader(MqttMessageType.UNSUBACK, false, MqttQoS.AT_MOST_ONCE, false, 0),
+                MqttMessageIdVariableHeader.from(msg.variableHeader().messageId()),
+                null);
+        ctx.channel().writeAndFlush(unsubAckMessage);
     }
 
     /**

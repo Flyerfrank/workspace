@@ -1,10 +1,7 @@
 package com.frank.netty.service;
 
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.mqtt.MqttConnectMessage;
-import io.netty.handler.codec.mqtt.MqttMessage;
-import io.netty.handler.codec.mqtt.MqttPublishMessage;
-import io.netty.handler.codec.mqtt.MqttSubscribeMessage;
+import io.netty.handler.codec.mqtt.*;
 
 public interface MqttHandlerService {
 
@@ -19,4 +16,5 @@ public interface MqttHandlerService {
 
     void doPingrespMessage(ChannelHandlerContext ctx, MqttMessage msg);
 
+    void doUnSubscribe(ChannelHandlerContext ctx, MqttUnsubscribeMessage msg);
 }

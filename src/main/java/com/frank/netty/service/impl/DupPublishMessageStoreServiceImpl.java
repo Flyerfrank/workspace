@@ -2,9 +2,11 @@ package com.frank.netty.service.impl;
 
 import com.frank.netty.service.DupPublishMessageStoreService;
 import com.frank.netty.store.DupPublishMessageStore;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class DupPublishMessageStoreServiceImpl implements DupPublishMessageStoreService {
     @Override
     public void put(String clientId, DupPublishMessageStore dupPublishMessageStore) {

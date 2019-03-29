@@ -22,12 +22,15 @@ public class NettyMqttClientHandler extends SimpleChannelInboundHandler<MqttMess
         mqtt.setHasCleanSession(true);
         mqtt.setHasWillFlag(true);
         mqtt.setClientIdentifier("client_123456");
-        mqtt.setWillTopic("test_1");
-        mqtt.setWillQos(1);
-        mqtt.setHasWillRetain(false);
-        mqtt.setWillMessage("message=======");
-        mqtt.setHasUserName(false);
-        mqtt.setHasPassword(false);
+//        mqtt.setClientIdentifier("DeviceId-jpt13u1yop");
+//        mqtt.setWillTopic("test_1");
+//        mqtt.setWillQos(1);
+//        mqtt.setHasWillRetain(false);
+//        mqtt.setWillMessage("message=======");
+        mqtt.setHasUserName(true);
+        mqtt.setHasPassword(true);
+        mqtt.setUserName("admin");
+        mqtt.setPassword("password");
 
         MqttFixedHeader mqttFixedHeader = new MqttFixedHeader(
                 MqttMessageType.CONNECT,
@@ -56,7 +59,9 @@ public class NettyMqttClientHandler extends SimpleChannelInboundHandler<MqttMess
                 mqtt.getPassword());
         MqttConnectMessage mqttConnectMessage = new MqttConnectMessage(mqttFixedHeader,mqttConnectVariableHeader,mqttConnectPayload);
 
+        System.out.println("mqttConnectMessage = " + mqttConnectMessage);
         ctx.channel().writeAndFlush(mqttConnectMessage);
+        System.out.println("===============================");
     }
 
     @Override
@@ -153,8 +158,12 @@ public class NettyMqttClientHandler extends SimpleChannelInboundHandler<MqttMess
     private void pubRecMessage(ChannelHandlerContext ctx, int messageId) {
         MqttFixedHeader mqttFixedHeader = new MqttFixedHeader(MqttMessageType.PUBREC,false, MqttQoS.AT_LEAST_ONCE,false,0x02);
         MqttMessageIdVariableHeader from = MqttMessageIdVariableHeader.from(messageId);
-        MqttMessage mqttPubAckMessage = new MqttMessage(mqttFixedHeader,from);
-        ctx.channel().writeAndFlush(mqttPubAckMessage);
+        MqttMessage mqttPubRecMessage = new MqttMessage(mqttFixedHeader,from);
+//        Optional.ofNullable(Cache.get(messageId)).ifPresent(sendMqttMessage -> {
+//            sendMqttMessage.setTimestamp(System.currentTimeMillis());
+//            sendMqttMessage.setConfirmStatus(ConfirmStatus.PUBREL);
+//        });
+        ctx.channel().writeAndFlush(mqttPubRecMessage);
     }
 
     private void pubBackMessage(ChannelHandlerContext ctx, int messageId) {

@@ -1,6 +1,8 @@
 package com.frank.netty.client;
 
 import com.frank.netty.client.handler.NettyMqttClientHandler;
+import com.frank.netty.ssl.SecureSokcetTrustManagerFactory;
+import com.frank.netty.util.SslUtil;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
@@ -10,8 +12,13 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.mqtt.MqttDecoder;
 import io.netty.handler.codec.mqtt.MqttEncoder;
+import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.SslHandler;
 
 import javax.annotation.PreDestroy;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLEngine;
+import java.net.URL;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -24,8 +31,11 @@ public class NettyMqttClient {
     private static Channel clientChannel;
     private static NioEventLoopGroup workerGroup;
 
+    private static  SSLContext clientContext;
 
-    public static void main(String[] args){
+    private static final String PROTOCOL = "TLS";
+
+    public static void main(String[] args) throws Exception{
 
          workerGroup = new NioEventLoopGroup();
         Bootstrap bootstrap = new Bootstrap();
@@ -36,10 +46,28 @@ public class NettyMqttClient {
                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS,5000)
                 .option(ChannelOption.SO_KEEPALIVE,true)
                 .option(ChannelOption.TCP_NODELAY,true)
-                .handler(new ChannelInitializer<SocketChannel>() {
+                .handler(new ChannelInitializer<SocketChannel>()  {
 
                     @Override
-                    protected void initChannel(SocketChannel ch){
+                    protected void initChannel(SocketChannel ch)throws Exception{
+
+////                        String path = ClassLoader.getSystemResource("testwss.jks").getPath();
+//                        SSLContext sslContext = SslUtil.createSSLContext("JKS","D:\\javaTools\\Java\\jdk1.8.0_161\\bin\\testwss.jks","123456");
+//                        //SSLEngine 此类允许使用ssl安全套接层协议进行安全通信
+//                        SSLEngine engine = sslContext.createSSLEngine();
+//                        engine.setUseClientMode(false);
+////                        ch.pipeline().addLast("sslHandler", new SslHandler(HttpSslContextFactory.createSSLEngine()));
+//                        ch.pipeline().addLast(new SslHandler(engine));
+//
+//                        SSLEngine engine =
+//                                SERVER_CONTEXT.createSSLEngine();
+//                        engine.setUseClientMode(false);
+//                        ch.pipeline().addLast("ssl", new SslHandler(engine));
+                        initSsl();
+                        SSLEngine engine =
+                                clientContext.createSSLEngine();
+                        engine.setUseClientMode(true);
+                        ch.pipeline().addLast("ssl", new SslHandler(engine));
                         ch.pipeline().addLast(new MqttDecoder());
                         ch.pipeline().addLast(new NettyMqttClientHandler());
                         ch.pipeline().addLast(MqttEncoder.INSTANCE);
@@ -47,6 +75,16 @@ public class NettyMqttClient {
                 });
 
         connect(bootstrap,HOST, PORT,MAX_RETRY);
+    }
+
+    private static void initSsl() {
+        try {
+            clientContext = SSLContext.getInstance(PROTOCOL);
+            clientContext.init(null, SecureSokcetTrustManagerFactory.getTrustManagers(), null);
+        } catch (Exception e) {
+            throw new Error(
+                    "Failed to initialize the client-side SSLContext", e);
+        }
     }
 
     private static void connect(Bootstrap bootstrap, String host, int port, int retry) {

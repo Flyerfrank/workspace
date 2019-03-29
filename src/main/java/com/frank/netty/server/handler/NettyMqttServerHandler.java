@@ -1,13 +1,17 @@
 package com.frank.netty.server.handler;
 
 import com.frank.netty.service.MqttHandlerService;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.mqtt.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+@Component
+@ChannelHandler.Sharable
 public class NettyMqttServerHandler extends SimpleChannelInboundHandler<MqttMessage> {
 
     @Autowired
@@ -54,10 +58,17 @@ public class NettyMqttServerHandler extends SimpleChannelInboundHandler<MqttMess
                 break;
             case PUBREC:
                 System.out.println("我是：PUBREC");
+                break;
             case PUBREL:
                 System.out.println("我是：PUBREL");
+                break;
             case PUBCOMP:
                 System.out.println("我是：PUBCOMP");
+                break;
+            case UNSUBSCRIBE:
+//                protocolProcess.unSubscribe().processUnSubscribe(ctx.channel(), (MqttUnsubscribeMessage) msg);
+                mqttHandlerService.doUnSubscribe(ctx, (MqttUnsubscribeMessage)msg);
+                break;
             case UNSUBACK:
                 System.out.println("我是：UNSUBACK");
                 break;
