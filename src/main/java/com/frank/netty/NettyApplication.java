@@ -1,6 +1,6 @@
 package com.frank.netty;
 
-import com.frank.netty.server.NettyMqttServer;
+import com.frank.netty.mqtt.server.NettyMqttServer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;

@@ -1,6 +1,6 @@
-package com.frank.netty.server.handler;
+package com.frank.netty.mqtt.server.handler;
 
-import com.frank.netty.service.MqttHandlerService;
+import com.frank.netty.mqtt.service.MqttHandlerService;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;

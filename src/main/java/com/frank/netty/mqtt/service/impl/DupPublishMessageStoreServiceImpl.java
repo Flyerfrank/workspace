@@ -1,7 +1,7 @@
-package com.frank.netty.service.impl;
+package com.frank.netty.mqtt.service.impl;
 
-import com.frank.netty.service.DupPublishMessageStoreService;
-import com.frank.netty.store.DupPublishMessageStore;
+import com.frank.netty.mqtt.service.DupPublishMessageStoreService;
+import com.frank.netty.mqtt.store.DupPublishMessageStore;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -1,6 +1,6 @@
-package com.frank.netty.server;
+package com.frank.netty.mqtt.server;
 
-import com.frank.netty.server.handler.NettyMqttServerHandler;
+import com.frank.netty.mqtt.server.handler.NettyMqttServerHandler;
 import com.frank.netty.util.SslUtil;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
@@ -13,17 +13,12 @@ import io.netty.handler.codec.mqtt.MqttDecoder;
 import io.netty.handler.codec.mqtt.MqttEncoder;
 import io.netty.handler.ssl.SslHandler;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PreDestroy;
-import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
-import java.security.KeyStore;
 import java.util.Date;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 @Configuration
 public class NettyMqttServer {

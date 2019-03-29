@@ -1,8 +1,7 @@
-package com.frank.netty.client;
+package com.frank.netty.mqtt.client;
 
-import com.frank.netty.client.handler.NettyMqttClientHandler;
 import com.frank.netty.ssl.SecureSokcetTrustManagerFactory;
-import com.frank.netty.util.SslUtil;
+import com.frank.netty.mqtt.client.handler.NettyMqttClientHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
@@ -12,13 +11,11 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.mqtt.MqttDecoder;
 import io.netty.handler.codec.mqtt.MqttEncoder;
-import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslHandler;
 
 import javax.annotation.PreDestroy;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
-import java.net.URL;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 

@@ -1,6 +1,6 @@
-package com.frank.netty.client.handler;
+package com.frank.netty.mqtt.client.handler;
 
-import com.frank.netty.domain.MqttOpntions;
+import com.frank.netty.mqtt.domain.MqttOpntions;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandlerContext;

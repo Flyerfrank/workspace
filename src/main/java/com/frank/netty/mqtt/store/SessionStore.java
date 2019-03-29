@@ -1,4 +1,4 @@
-package com.frank.netty.store;
+package com.frank.netty.mqtt.store;
 
 
 import io.netty.channel.Channel;

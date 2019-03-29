@@ -23,13 +23,14 @@ public class AuthServiceImpl implements AuthService {
         if (StringUtils.isEmpty(password)){
             return false;
         }
-        RSA rsa = new RSA(privateKey,null);
-        String value = rsa.encryptBcd(username, KeyType.PrivateKey);
-        return value.equals(password) ? true : false;
+//        RSA rsa = new RSA(privateKey,null);
+//        String value = rsa.encryptBcd(username, KeyType.PrivateKey);
+//        return value.equals(password) ? true : false;
+        return true;
     }
 
-    @PostConstruct
-    public void init() {
-        privateKey = IoUtil.readObj(AuthServiceImpl.class.getClassLoader().getResourceAsStream("keystore/auth-private.key"));
-    }
+//    @PostConstruct
+//    public void init() {
+//        privateKey = IoUtil.readObj(this.getClass().getClassLoader().getResourceAsStream("keystore/auth-private.key"));
+//    }
 }
